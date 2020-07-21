@@ -1,4 +1,5 @@
 pipeline {
+  agent any
   environment {
     DEPLOY = "${env.BRANCH_NAME == "master" || env.BRANCH_NAME == "develop" ? "true" : "false"}"
     NAME = "xfers-baseimages"
@@ -7,7 +8,6 @@ pipeline {
     REGISTRY = 'sweetatxfers'
     REGISTRY_CREDENTIAL = 'jenkins-dockerhub'
   }
-
   stages {
     stage('Build circleci-2.4.4') {
       steps {
