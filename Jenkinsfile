@@ -14,7 +14,7 @@ podTemplate(label: 'mypod', serviceAccount: 'jenkins-ci', containers: [
     hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
   ]
   ) {
-    node('mypod') {
+    node {
         def REPOSITORY_URL = 'https://registry.hub.docker.com'
         def IMAGE_NAME = 'sweetatxfers/xfers-circleci'
         def REPO_CRED = 'jenkins-dockerhub'
