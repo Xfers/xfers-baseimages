@@ -19,8 +19,10 @@ pipeline {
         //   repositoryUrl
         //   repositoryCredentialsId '${REGISTRY_CREDENTIAL}'
         // }
-        docker.withRegistry('${REGISTRY_URL}', '${REGISTRY_CREDENTIAL}') {
-          docker.build('${REGISTRY}/xfers-circleci', 'circleci-2-4-4').push('2.4.4')
+        node {
+          docker.withRegistry('${REGISTRY_URL}', '${REGISTRY_CREDENTIAL}') {
+            docker.build('${REGISTRY}/xfers-circleci', 'circleci-2-4-4').push('2.4.4')
+          }
         }
       }
     }
@@ -33,9 +35,12 @@ pipeline {
         //   repositoryUrl 'https://registry.hub.docker.com'
         //   repositoryCredentialsId '${REGISTRY_CREDENTIAL}'
         // }
-        docker.withRegistry('${REGISTRY_URL}', '${REGISTRY_CREDENTIAL}') {
-          docker.build('${REGISTRY}/xfers-circleci', 'circleci-2-4-10').push('2.4.10')
+        node {
+          docker.withRegistry('${REGISTRY_URL}', '${REGISTRY_CREDENTIAL}') {
+            docker.build('${REGISTRY}/xfers-circleci', 'circleci-2-4-10').push('2.4.10')
+          }
         }
+
       }
     }
   }
