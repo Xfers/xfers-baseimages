@@ -1,12 +1,8 @@
-podTemplate(label: 'mypod', serviceAccount: 'jenkins-ci', containers: [
+podTemplate(label: 'mypod', serviceAccount: 'jenkins', containers: [
     containerTemplate(
       name: 'docker',
       image: 'docker',
       command: 'cat',
-      resourceRequestCpu: '100m',
-      resourceLimitCpu: '300m',
-      resourceRequestMemory: '300Mi',
-      resourceLimitMemory: '500Mi',
       ttyEnabled: true
     )
   ],
@@ -14,7 +10,7 @@ podTemplate(label: 'mypod', serviceAccount: 'jenkins-ci', containers: [
     hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
   ]
   ) {
-    node {
+    node('mypod') {
         def REPOSITORY_URL = 'https://registry.hub.docker.com'
         def IMAGE_NAME = 'sweetatxfers/xfers-circleci'
         def REPO_CRED = 'jenkins-dockerhub'
