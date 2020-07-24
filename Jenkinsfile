@@ -1,6 +1,8 @@
 pipeline {
   agent {
-    docker { image "jenkins/jnlp-agent-docker" }
+    kubernetes {
+      label "docker"
+    }
   }
   environment {
     REPOSITORY_URL = 'https://registry.hub.docker.com'
