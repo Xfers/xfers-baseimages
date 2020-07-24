@@ -1,7 +1,7 @@
 pipeline {
   agent {
     kubernetes {
-      label "jenkins-jenkins-slave default"
+      label "docker"
     }
   }
   environment {
