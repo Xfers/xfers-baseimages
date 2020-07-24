@@ -1,64 +1,54 @@
-pipeline {
-  agent {
-    kubernetes {
-      containerTemplate {
-        name "docker"
-        image "jenkins/jnlp-agent-docker:latest"
-        ttyEnabled true
-        command 'cat'
-      }
-    }
-  }
-  environment {
-    REPOSITORY_URL = 'https://registry.hub.docker.com'
-    IMAGE_NAME = 'sweetatxfers/xfers-circleci'
-    REPO_CRED = 'jenkins-dockerhub'
-  }
-  stages {
-    stage('Get latest version of code') {
-      steps {
-        checkout scm
-      }
-    }
-    stage('Build Image 2-4-4') {
-      steps {
-        container('docker') {
-          script {
-            docker.build("${IMAGE_NAME}:2.4.4", "circleci-2-4-4")
-          }
+podTemplate(label: 'mypod', serviceAccount: 'jenkins', containers: [
+    containerTemplate(
+      name: 'docker',
+      image: 'docker',
+      command: 'cat',
+      ttyEnabled: true
+    )
+  ],
+  volumes: [
+    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
+  ]
+  ) {
+    node('mypod') {
+        def REPOSITORY_URL = 'https://registry.hub.docker.com'
+        def IMAGE_NAME = 'sweetatxfers/xfers-circleci'
+        def REPO_CRED = 'jenkins-dockerhub'
+
+        stage('Get latest version of code') {
+          checkout scm
         }
-      }
-    }
-    stage('Build Image 2-4-10') {
-      steps {
-        container('docker') {
-          script {
-            docker.build("${IMAGE_NAME}:2.4.10", "circleci-2-4-10")
-          }
-        }
-      }
-    }
-    stage('Push Image 2-4-4'){
-      steps {
-        container('docker') {
-          script {
-            docker.withRegistry("${REPOSITORY_URL}", "jenkins-dockerhub") {
-              docker.image("${IMAGE_NAME}:2.4.4").push()
+        stage('Build Image 2-4-4') {
+          container('docker') {
+            script {
+              docker.build("sweetatxfers/xfers-circleci:2.4.4", "circleci-2-4-4")
             }
           }
         }
-      }
-    }
-    stage('Push Image 2-4-10'){
-      steps {
-        container('docker') {
-          script {
-            docker.withRegistry("https://registry.hub.docker.com", "jenkins-dockerhub") {
-              docker.image("${IMAGE_NAME}:2.4.10").push()
+        stage('Build Image 2-4-10') {
+          container('docker') {
+            script {
+              docker.build("sweetatxfers/xfers-circleci:2.4.10", "circleci-2-4-10")
             }
           }
         }
-      }
+        stage('Push Image 2-4-4'){
+          container('docker') {
+            script {
+              docker.withRegistry("${REPOSITORY_URL}", "jenkins-dockerhub") {
+                docker.image("sweetatxfers/xfers-circleci:2.4.4").push()
+              }
+            }
+          }
+        }
+        stage('Push Image 2-4-10'){
+          container('docker') {
+            script {
+              docker.withRegistry("https://registry.hub.docker.com", "jenkins-dockerhub") {
+                docker.image("sweetatxfers/xfers-circleci:2.4.10").push()
+              }
+            }
+          }
+        }
     }
-  }
 }
