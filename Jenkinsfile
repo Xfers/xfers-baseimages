@@ -1,7 +1,12 @@
 pipeline {
   agent {
     kubernetes {
-      defaultContainer "docker"
+      containerTemplate {
+        name "docker"
+        image "jenkins/jnlp-agent-docker:latest"
+        ttyEnabled true
+        command 'cat'
+      }
     }
   }
   environment {
@@ -17,32 +22,40 @@ pipeline {
     }
     stage('Build Image 2-4-4') {
       steps {
-        script {
-          docker.build("${IMAGE_NAME}:2.4.4", "circleci-2-4-4")
+        container('docker') {
+          script {
+            docker.build("${IMAGE_NAME}:2.4.4", "circleci-2-4-4")
+          }
         }
       }
     }
     stage('Build Image 2-4-10') {
       steps {
-        script {
-          docker.build("${IMAGE_NAME}:2.4.10", "circleci-2-4-10")
+        container('docker') {
+          script {
+            docker.build("${IMAGE_NAME}:2.4.10", "circleci-2-4-10")
+          }
         }
       }
     }
     stage('Push Image 2-4-4'){
       steps {
-        script {
-          docker.withRegistry("${REPOSITORY_URL}", "jenkins-dockerhub") {
-            docker.image("${IMAGE_NAME}:2.4.4").push()
+        container('docker') {
+          script {
+            docker.withRegistry("${REPOSITORY_URL}", "jenkins-dockerhub") {
+              docker.image("${IMAGE_NAME}:2.4.4").push()
+            }
           }
         }
       }
     }
     stage('Push Image 2-4-10'){
       steps {
-        script {
-          docker.withRegistry("https://registry.hub.docker.com", "jenkins-dockerhub") {
-            docker.image("${IMAGE_NAME}:2.4.10").push()
+        container('docker') {
+          script {
+            docker.withRegistry("https://registry.hub.docker.com", "jenkins-dockerhub") {
+              docker.image("${IMAGE_NAME}:2.4.10").push()
+            }
           }
         }
       }
