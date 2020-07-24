@@ -1,5 +1,9 @@
 pipeline {
-  agent any
+  agent {
+    docker {
+      image: "jenkins/jnlp-agent-docker"
+    }
+  }
   environment {
     REPOSITORY_URL = 'https://registry.hub.docker.com'
     IMAGE_NAME = 'sweetatxfers/xfers-circleci'
