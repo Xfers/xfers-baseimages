@@ -1,8 +1,6 @@
 pipeline {
   agent {
-    docker {
-      image: "jenkins/jnlp-agent-docker"
-    }
+    docker { image "jenkins/jnlp-agent-docker" }
   }
   environment {
     REPOSITORY_URL = 'https://registry.hub.docker.com'
@@ -11,29 +9,39 @@ pipeline {
   }
   stages {
     stage('Get latest version of code') {
-      checkout scm
+      steps {
+        checkout scm
+      }
     }
     stage('Build Image 2-4-4') {
       script {
-        docker.build("${IMAGE_NAME}:2.4.4", "circleci-2-4-4")
+        steps {
+          docker.build("${IMAGE_NAME}:2.4.4", "circleci-2-4-4")
+        }
       }
     }
     stage('Build Image 2-4-10') {
       script {
-        docker.build("${IMAGE_NAME}:2.4.10", "circleci-2-4-10")
+        steps {
+          docker.build("${IMAGE_NAME}:2.4.10", "circleci-2-4-10")
+        }
       }
     }
     stage('Push Image 2-4-4'){
       script {
-        docker.withRegistry("${REPOSITORY_URL}", "jenkins-dockerhub") {
-          docker.image("${IMAGE_NAME}:2.4.4").push()
+        steps {
+          docker.withRegistry("${REPOSITORY_URL}", "jenkins-dockerhub") {
+            docker.image("${IMAGE_NAME}:2.4.4").push()
+          }
         }
       }
     }
     stage('Push Image 2-4-10'){
       script {
-        docker.withRegistry("https://registry.hub.docker.com", "jenkins-dockerhub") {
-          docker.image("${IMAGE_NAME}:2.4.10").push()
+        steps {
+          docker.withRegistry("https://registry.hub.docker.com", "jenkins-dockerhub") {
+            docker.image("${IMAGE_NAME}:2.4.10").push()
+          }
         }
       }
     }
