@@ -13,8 +13,8 @@ podTemplate(label: 'mypod', serviceAccount: 'jenkins', containers: [
     node('mypod') {
         def REPOSITORY_URL = 'https://registry.hub.docker.com'
         def credentials_id = 'dockerhub-credentials'
-        def Image ruby_2_4_4
-        def Image ruby_2_4_10
+        def ruby_2_4_4
+        def ruby_2_4_10
 
         stage('Get latest version of code') {
           checkout scm
