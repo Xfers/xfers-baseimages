@@ -24,7 +24,7 @@ podTemplate(label: 'mypod', serviceAccount: 'jenkins', containers: [
           container('docker') {
             withCredentials([usernamePassword(credentialsId: credentials_id, usernameVariable: 'username', passwordVariable: 'password')]) {
               script {
-                ruby_2_4_4 = docker.build('${username}/ruby:2.4.4', '--network=host circleci-2-4-4')
+                ruby_2_4_4 = docker.build("${username}/ruby:2.4.4", '--network=host circleci-2-4-4')
               }
             }
           }
@@ -33,7 +33,7 @@ podTemplate(label: 'mypod', serviceAccount: 'jenkins', containers: [
           container('docker') {
             withCredentials([usernamePassword(credentialsId: credentials_id, usernameVariable: 'username', passwordVariable: 'password')]) {
               script {
-                ruby_2_4_10 = docker.build('${username}/ruby:2.4.10', '--network=host circleci-2-4-10')
+                ruby_2_4_10 = docker.build("${username}/ruby:2.4.10", '--network=host circleci-2-4-10')
               }
             }
           }
