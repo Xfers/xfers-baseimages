@@ -22,15 +22,19 @@ podTemplate(label: 'mypod', serviceAccount: 'jenkins', containers: [
 
         stage('Build Image 2-4-4') {
           container('docker') {
-            script {
-              ruby_2_4_4 = docker.build('ruby:2.4.4', '--network=host circleci-2-4-4')
+            withCredentials([usernamePassword(credentialsId: credentials_id, usernameVariable: 'username', passwordVariable: 'password')]) {
+              script {
+                ruby_2_4_4 = docker.build('$username/ruby:2.4.4', '--network=host circleci-2-4-4')
+              }
             }
           }
         }
         stage('Build Image 2-4-10') {
           container('docker') {
-            script {
-              ruby_2_4_10 = docker.build('ruby:2.4.10', '--network=host circleci-2-4-10')
+            withCredentials([usernamePassword(credentialsId: credentials_id, usernameVariable: 'username', passwordVariable: 'password')]) {
+              script {
+                ruby_2_4_10 = docker.build('$username/ruby:2.4.10', '--network=host circleci-2-4-10')
+              }
             }
           }
         }
