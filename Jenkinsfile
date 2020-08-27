@@ -12,13 +12,9 @@ podTemplate(label: 'mypod', serviceAccount: 'jenkins', containers: [
   ) {
     node('mypod') {
         def REPOSITORY_URL = 'https://registry.hub.docker.com'
-
         def credentials_id = 'dockerhub-credentials'
-        def repository_name
-
-        withCredentials([usernamePassword(credentialsId: credentials_id, usernameVariable: 'username')]) {
-            repository_name = $username
-        }
+        def Image ruby_2_4_4
+        def Image ruby_2_4_10
 
         stage('Get latest version of code') {
           checkout scm
@@ -26,15 +22,19 @@ podTemplate(label: 'mypod', serviceAccount: 'jenkins', containers: [
 
         stage('Build Image 2-4-4') {
           container('docker') {
-            script {
-              docker.build("${repository_name}/ruby:2.4.4", "circleci-2-4-4")
+            withCredentials([usernamePassword(credentialsId: credentials_id, usernameVariable: 'username')]) {
+              script {
+                ruby_2_4_4 = docker.build('$username/ruby:2.4.4', 'circleci-2-4-4')
+              }
             }
           }
         }
         stage('Build Image 2-4-10') {
           container('docker') {
-            script {
-              docker.build("${repository_name}/ruby:2.4.10", "circleci-2-4-10")
+            withCredentials([usernamePassword(credentialsId: credentials_id, usernameVariable: 'username')]) {
+              script {
+                ruby_2_4_10 = docker.build('${repository_name}/ruby:2.4.10', 'circleci-2-4-10')
+              }
             }
           }
         }
@@ -42,7 +42,7 @@ podTemplate(label: 'mypod', serviceAccount: 'jenkins', containers: [
           container('docker') {
             script {
               docker.withRegistry(REPOSITORY_URL, "jenkins-dockerhub") {
-                docker.image("${repository_name}/ruby:2.4.4").push()
+                ruby_2_4_4.push()
               }
             }
           }
@@ -51,7 +51,7 @@ podTemplate(label: 'mypod', serviceAccount: 'jenkins', containers: [
           container('docker') {
             script {
               docker.withRegistry(REPOSITORY_URL, "jenkins-dockerhub") {
-                docker.image("${repository_name}/ruby:2.4.10").push()
+                ruby_2_4_10.push()
               }
             }
           }
