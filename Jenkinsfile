@@ -41,7 +41,7 @@ podTemplate(label: 'mypod', serviceAccount: 'jenkins', containers: [
         stage('Push Image 2-4-4') {
           container('docker') {
             script {
-              docker.withRegistry(REPOSITORY_URL, "jenkins-dockerhub") {
+              docker.withRegistry(REPOSITORY_URL, credentials_id) {
                 ruby_2_4_4.push()
               }
             }
@@ -50,7 +50,7 @@ podTemplate(label: 'mypod', serviceAccount: 'jenkins', containers: [
         stage('Push Image 2-4-10') {
           container('docker') {
             script {
-              docker.withRegistry(REPOSITORY_URL, "jenkins-dockerhub") {
+              docker.withRegistry(REPOSITORY_URL, credentials_id) {
                 ruby_2_4_10.push()
               }
             }
